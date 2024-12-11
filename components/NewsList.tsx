@@ -3,8 +3,20 @@ import { View, Text, StyleSheet, Image } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
+type IconType = 'like' | 'bell' | 'follow' | 'reply';
+
+type NewsItem = {
+  id: number;
+  userName: string;
+  title: string;
+  description: string;
+  userIcon: string;
+  iconType: IconType;
+  time: string;
+};
+
 const NewsList = () => {
-  const newsItems = [
+  const newsItems: NewsItem[] = [
     {
       id: 1,
       userName: "ひろさわ",
@@ -43,29 +55,25 @@ const NewsList = () => {
     },
   ];
 
-  const renderIcon = (type: string, isUserIcon: string) => {
+  const renderIcon = (type: IconType, isUserIcon?: boolean) => {
     const iconData = {
       like: { style: styles.like, name: "heart-o", library: Icon },
       bell: { style: styles.bell, name: "bell-o", library: Icon },
       follow: { style: styles.follow, name: "user-o", library: Icon },
       reply: { style: styles.reply, name: "message-reply-outline", library: MaterialCommunityIcons },
-    };
+    } as const;
 
     const IconComponent = iconData[type]?.library;
 
-    if (!IconComponent) return null; // タイプが無効なら何も描画しない
-
-    if (type === "bell" && isUserIcon) {
-      return (
-        <View style={styles.userIcon}> {/* Apply userIcon style for bell */}
-          <IconComponent name={iconData[type].name} size={20} color="black" />
-        </View>
-      );
-    }
+    if (!IconComponent) return null;
 
     return (
       <View style={isUserIcon ? styles.userIcon : [styles.icon, iconData[type].style]}>
-        <IconComponent name={iconData[type].name} size={isUserIcon ? 20 : 12} color="black" />
+        <IconComponent 
+          name={iconData[type].name} 
+          size={isUserIcon ? 20 : 12} 
+          color="black" 
+        />
       </View>
     );
   };
@@ -74,22 +82,29 @@ const NewsList = () => {
     <View style={styles.newsList}>
       {newsItems.map((item) => (
         <View style={styles.newsItem} key={item.id}>
-          {/* ユーザーアイコンまたは通知アイコン */}
-          {item.iconType === "bell" ? (
-            renderIcon(item.iconType, true)
-          ) : item.userIcon ? (
-            <Image source={{ uri: item.userIcon }} style={styles.userIcon} />
-          ) : (
-            renderIcon(item.iconType)
-          )}
-          {item.iconType !== "bell" && renderIcon(item.iconType)} {/* Hide absolute positioned icon for bell */}
+          <View style={styles.iconContainer}>
+            {/* ユーザーアイコンまたは通知アイコン */}
+            {item.iconType === "bell" ? (
+              renderIcon(item.iconType, true)
+            ) : item.userIcon ? (
+              <Image source={{ uri: item.userIcon }} style={styles.userIcon} />
+            ) : null}
+            {/* アイコンを条件付きでレンダリング */}
+            {item.iconType !== "bell" && (
+              <View style={styles.iconWrapper}>
+                {renderIcon(item.iconType)}
+              </View>
+            )}
+          </View>
           <View style={styles.newsContent}>
             {/* ユーザー名とタイトル */}
             <Text style={styles.newsTitle}>
               {item.userName ? `${item.userName} ` : ""}
               {item.title}
             </Text>
-            <Text style={styles.newsDescription}>{item.description}</Text>
+            {item.description && (
+              <Text style={styles.newsDescription}>{item.description}</Text>
+            )}
           </View>
           <Text style={styles.newsTime}>{item.time}</Text>
         </View>
@@ -124,8 +139,8 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 20,
     position: "absolute",
-    left: 25,
-    bottom: 20,
+    left: -25,
+    bottom: 10,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -158,6 +173,16 @@ const styles = StyleSheet.create({
   newsTime: {
     fontSize: 12,
     color: "#8e826f",
+  },
+  iconContainer: {
+    position: 'relative',
+    width: 40,
+    marginRight: 10,
+  },
+  iconWrapper: {
+    position: 'absolute',
+    bottom: -10,
+    right: -10,
   },
 });
 

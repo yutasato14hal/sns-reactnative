@@ -4,7 +4,6 @@ import {
   Text,
   View,
   FlatList,
-  Pressable,
   Switch,
   RefreshControl,
 } from "react-native";
@@ -22,8 +21,8 @@ export default function HomeScreen() {
     { id: "5", title: "ログアウト", type: "action" },
   ];
 
-  const renderMenuItem = (item: any) => (
-    <View key={item.id} style={styles.listItemContainer}>
+  const renderItem = ({ item }: { item: any }) => (
+    <View style={styles.listItemContainer}>
       <Text
         style={[
           styles.listItemText,
@@ -71,7 +70,14 @@ export default function HomeScreen() {
           <Text style={styles.bio}>User1の自己紹介文</Text>
         </View>
       </View>
-      <View style={styles.listContainer}>{menuItems.map(renderMenuItem)}</View>
+      <View style={styles.listContainer}>
+        <FlatList
+          data={menuItems}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          scrollEnabled={false}
+        />
+      </View>
     </ParallaxScrollView>
   );
 }

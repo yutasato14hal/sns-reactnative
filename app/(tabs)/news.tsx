@@ -1,6 +1,4 @@
-import { Image, StyleSheet, Platform } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
+import { Image, StyleSheet, Platform, RefreshControl } from 'react-native';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -23,7 +21,11 @@ export default function HomeScreen() {
           source={require('@/assets/images/partial-react-logo.png')}
           style={styles.reactLogo}
         />
-      }>
+      }
+      refreshControl={
+        <RefreshControl refreshing={false} onRefresh={() => {}} />
+      }
+    >
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">お知らせ</ThemedText>
         

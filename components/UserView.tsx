@@ -18,7 +18,7 @@ import { useState } from "react";
 //     followers: 200,
 // }
 
-export const UserView = ({ user }) => {
+export const UserView = ({ user }: { user: any }) => {
   console.log(user);
   const [isFollowed, setIsFollowed] = useState(user.follows);
 
@@ -55,18 +55,16 @@ export const UserView = ({ user }) => {
 
 const styles = StyleSheet.create({
   userViewContainer: {
-    display: "flex",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-  },
+  } as const,
   postUserContainer: {
-    display: "flex",
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
     marginBottom: 8,
-  },
+  } as const,
   postUserName: {
     color: "#9d9d9d",
     fontSize: 11,
@@ -94,13 +92,10 @@ const styles = StyleSheet.create({
   },
   followButton: {
     backgroundColor: "#F7AD2E",
-    minWidth: "100px",
+    minWidth: 100,
     alignItems: "center",
-    fontWeight: "bold",
-    paddingTop: 8,
-    paddingBottom: 8,
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
     borderRadius: 9999,
-  },
+  } as const,
 });
